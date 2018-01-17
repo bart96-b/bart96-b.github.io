@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-- Автор - Пряхин Игорь  ::  BART96  ::  Author - Prjakhin Igor -->
+<!-- Уважайте чужой труд.  ::  Respect other people's work. -->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	<title>BART96 :: Support :: iPlayCraft.ru</title>
+	
+	<Style rel="StyleSheet" type="text/css">
+		html, body { margin:0; padding:0; overflow: hidden; }
+		iframe { position: relative; top:-280px; width: 100%; } 
+		center { position: relative; margin: 0px; padding: 0px; border: 2px solid black; background: url("http://iplaycraft.ru/templates/iPCSite/images/bg_main.png") no-repeat fixed 50% 0% / cover transparent; width: 100%; z-index: 5; }
+		.go { border: 2px solid black; border-radius: 5px; padding: 10px; margin: 5px; background: grey; cursor: pointer; }
+		#copy_url { position: absolute; left: -9999px; }
+	</Style>
+	
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+	<script>
+		var numb = 4255;	//	>>>	На этом тикете будет открываться стартовая страница, если отсутсвуют куки <<<
+		
+		function setcookie(a,b,c) {
+			if(c){ var d = new Date();d.setDate(d.getDate()+c); }
+			if(a && b) document.cookie = a+'='+b+(c ? '; expires='+d.toUTCString() : '');
+			else return false;
+		}
+		function getcookie(a) {
+			var b = new RegExp(a+'=([^;]){1,}');
+			var c = b.exec(document.cookie);
+			
+			if(c) c = c[0].split('=');
+			else return false;
+			
+			return c[1] ? c[1] : false;
+		}
+		
+		var numb_cook = getcookie( "numb_cook" );
+	
+		if ( numb_cook != false){ numb = numb_cook; }
+		else { setcookie("numb_cook",numb,99); }
+
+		
+		function UpDate(numb){
+			var iframe = document.getElementById('iframe');
+			var url = 'http://iplaycraft.ru/index.php?do=support&mode=admin&action=read&uuid=';
+			
+			iframe.src = url + numb;
+			document.getElementById('copy_url').innerHTML = url + numb;
+			setcookie("numb_cook",numb,99);
+		}
+		
+		$(document).ready(function(){
+			var html = document.documentElement;
+			
+			$("#iframe").css( "height", ( html.clientHeight + 280 ));
+			UpDate(numb);
+		});
+		
+		
+		function page(go_to){ numb = numb - go_to; UpDate(numb); }
+		function page_to (){ numb = document.getElementById('UpDate_to_text').value; UpDate(numb); }
+		function copy_me(){
+			var copy_Btn = document.querySelector('#copy_url_btn');
+			var copy_url_text = document.querySelector('#copy_url');
+			var range = document.createRange();
+			
+			window.getSelection().removeAllRanges();
+			range.selectNode(copy_url_text);
+			window.getSelection().addRange(range);
+			
+			try {
+				var successful = document.execCommand('copy');
+				var msg = successful ? 'скопирована' : 'не скопирована';
+				alert('Ссылка на тикет ' + msg + '  ::  ' + numb);
+			}
+			catch(err){ alert('Oops. Error. Автор кода криворукий раздолбай.'); }
+			
+			window.getSelection().removeAllRanges();
+		}
+	</script>
+	
+	<form method="POST" target="_blank" id='ban_form' action="http://iplaycraft.ru/index.php?do=banlist"></form>
+	
+	<center>
+		<span class="go">
+			Бан-лист: <input type="text" name="name" placeholder=" Ник для поиска" form="ban_form" />
+			<input type="submit" name="submit" value="GO" class="submit" form="ban_form" onclick="ban();" />
+		</span>
+		
+		<span class="go" onclick="page('10');"		>< < < -10</span>
+		<span class="go" onclick="page('1');"		>< < <</span>
+		
+		<span id="copy_url"></span>
+		<button class="go" id="copy_url_btn" onclick="copy_me()">URL</button>
+		
+		<span class="go" onclick="page('-1');"		>> > ></span>
+		<span class="go" onclick="page('-10');"		>+10 > > ></span>
+
+		<span class="go">
+			№ тикета: <input type="text" id='UpDate_to_text' placeholder=" номер" />
+			<input type="button" onclick="page_to();" value="GO" class="submit" />
+		</span>
+	</center>
+	
+	<iframe id='iframe' src="about:blank">Ваш браузер не поддерживает iframe</iframe>
+</body>
+</html>
+
+
+
+
